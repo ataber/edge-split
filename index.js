@@ -12,7 +12,7 @@ module.exports = function(cells, positions, threshold, maxIterations) {
       squaredLength: vec3.squaredLength(scratch),
       edge: edge
     });
-  })
+  });
 
   if (threshold == null) {
     var meanEdgeLength = 0;
@@ -39,24 +39,17 @@ module.exports = function(cells, positions, threshold, maxIterations) {
     var edge = element.edge;
     vec3.add(scratch, positions[edge[0]], positions[edge[1]]);
     vec3.scale(scratch, scratch, 0.5);
-    positions.push(scratch.slice());
-    var newVertexIndex = positions.length - 1;
+    var newVertexIndex = positions.push(scratch.slice()) - 1;
 
     // normalization changes in-place
     var normalizedEdge = edge.slice();
     var incidence = complex.incidence(complex.normalize([normalizedEdge]), cells)[0];
-    var cellsToBeDeleted = new Set();
+    var cellsToBeDeleted = incidence;
     var edgesToBeAdded = new Set();
     incidence.map(function(cellIndex) {
       var cell = cells[cellIndex];
-      cellsToBeDeleted.add(cellIndex);
-      var oppositeVertexIndex;
-      var oppositeVertex = cell.find(function(index, i) {
-        if (edge.includes(index)) {
-          oppositeVertexIndex = i;
-          return true;
-        };
-        return false;
+      var oppositeVertex = cell.find(function(index) {
+        return !edge.includes(index);
       });
 
       if (typeof oppositeVertex == 'undefined') {
@@ -66,11 +59,9 @@ module.exports = function(cells, positions, threshold, maxIterations) {
       var newCells = [];
       for (var i = 0; i < 2; i++) {
         // preserve orientation
-        if (oppositeVertexIndex > cell.indexOf(edge[i])) {
-          newCells.push([edge[i], newVertexIndex, oppositeVertex]);
-        } else {
-          newCells.push([oppositeVertex, newVertexIndex, edge[i]]);
-        }
+        var newCell = cell.slice();
+        newCell[newCell.indexOf(edge[(i + 1) % 2])] = newVertexIndex;
+        newCells.push(newCell);
       }
       newCells = complex.normalize(newCells);
       newCells.map(function(cell) {
@@ -84,7 +75,7 @@ module.exports = function(cells, positions, threshold, maxIterations) {
       newEdges.map(function(newEdge) {
         edgesToBeAdded.add(newEdge);
       });
-    })
+    });
 
     edgesToBeAdded.forEach(function(newEdge) {
       vec3.subtract(scratch, positions[newEdge[0]], positions[newEdge[1]]);
@@ -92,11 +83,12 @@ module.exports = function(cells, positions, threshold, maxIterations) {
         squaredLength: vec3.squaredLength(scratch),
         edge: newEdge
       });
-    })
+    });
 
-    cellsToBeDeleted.forEach(function(cellIndex) {
+    cellsToBeDeleted.sort().reverse().forEach(function(cellIndex) {
       cells.splice(cellIndex, 1);
-    })
+    });
+    complex.normalize(cells);
   }
 
   return {
