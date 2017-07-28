@@ -1,0 +1,42 @@
+{
+  "name": "edge-split",
+  "version": "1.0.0",
+  "description": "Iteratively split edges to get a more uniform tessellation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ataber/edge-split.git"
+  },
+  "keywords": [
+    "edge",
+    "split",
+    "mesh",
+    "simplicial",
+    "complex",
+    "tessellation",
+    "geometry",
+    "triangulation",
+    "refinement"
+  ],
+  "author": "Andrew Taber <andrew.e.taber@gmail.com> (http://taber.space)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ataber/edge-split/issues"
+  },
+  "homepage": "https://github.com/ataber/edge-split#readme",
+  "dependencies": {
+    "budo": "^10.0.4",
+    "gl-vec3": "^1.0.3",
+    "heap": "^0.2.6",
+    "simplicial-complex": "^1.0.0"
+  },
+  "devDependencies": {
+    "bunny": "^1.0.1",
+    "mesh-viewer": "^1.0.0",
+    "normals": "^1.1.0",
+    "primitive-cylinder": "^1.0.1"
+  }
+}
