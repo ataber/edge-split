@@ -1,6 +1,6 @@
 {
   "name": "edge-split",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Iteratively split edges to get a more uniform tessellation",
   "main": "index.js",
   "scripts": {
