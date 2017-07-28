@@ -42,9 +42,7 @@ module.exports = function(cells, positions, threshold, maxIterations) {
     vec3.scale(scratch, scratch, 0.5);
     var newVertexIndex = positions.push(scratch.slice()) - 1;
 
-    // normalization changes in-place
-    var normalizedEdge = edge.slice();
-    var incidence = complex.incidence(complex.normalize([normalizedEdge]), cells)[0];
+    var incidence = complex.incidence([edge], cells)[0];
     var cellsToBeDeleted = incidence;
     var edgesToBeAdded = [];
     incidence.map(function(cellIndex) {
@@ -90,7 +88,6 @@ module.exports = function(cells, positions, threshold, maxIterations) {
     }).reverse().map(function(cellIndex) {
       cells.splice(cellIndex, 1);
     });
-    complex.normalize(cells);
   }
 
   return {
