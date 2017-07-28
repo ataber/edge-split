@@ -22,21 +22,21 @@
     "refinement"
   ],
   "author": "Andrew Taber <andrew.e.taber@gmail.com> (http://taber.space)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ataber/edge-split/issues"
   },
   "homepage": "https://github.com/ataber/edge-split#readme",
   "dependencies": {
-    "budo": "^10.0.4",
     "gl-vec3": "^1.0.3",
     "heap": "^0.2.6",
     "simplicial-complex": "^1.0.0"
   },
   "devDependencies": {
     "bunny": "^1.0.1",
-    "mesh-viewer": "^1.0.0",
-    "normals": "^1.1.0",
-    "primitive-cylinder": "^1.0.1"
+    "gl-mat4": "^1.1.4",
+    "gl-wireframe": "^1.0.1",
+    "regl": "^1.3.0",
+    "regl-camera": "^2.1.1"
   }
 }

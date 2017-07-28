@@ -18,7 +18,7 @@ module.exports = function(cells, positions, threshold, maxIterations) {
     var meanEdgeLength = 0;
     heap.toArray().map(function(element) {
       meanEdgeLength += Math.sqrt(element.squaredLength);
-    })
+    });
     meanEdgeLength /= heap.size();
     threshold = meanEdgeLength;
   }
@@ -37,6 +37,7 @@ module.exports = function(cells, positions, threshold, maxIterations) {
     }
 
     var edge = element.edge;
+
     vec3.add(scratch, positions[edge[0]], positions[edge[1]]);
     vec3.scale(scratch, scratch, 0.5);
     var newVertexIndex = positions.push(scratch.slice()) - 1;
@@ -45,7 +46,7 @@ module.exports = function(cells, positions, threshold, maxIterations) {
     var normalizedEdge = edge.slice();
     var incidence = complex.incidence(complex.normalize([normalizedEdge]), cells)[0];
     var cellsToBeDeleted = incidence;
-    var edgesToBeAdded = new Set();
+    var edgesToBeAdded = [];
     incidence.map(function(cellIndex) {
       var cell = cells[cellIndex];
       var oppositeVertex = cell.find(function(index) {
@@ -63,7 +64,6 @@ module.exports = function(cells, positions, threshold, maxIterations) {
         newCell[newCell.indexOf(edge[(i + 1) % 2])] = newVertexIndex;
         newCells.push(newCell);
       }
-      newCells = complex.normalize(newCells);
       newCells.map(function(cell) {
         cells.push(cell);
       });
@@ -71,13 +71,13 @@ module.exports = function(cells, positions, threshold, maxIterations) {
       var hypotenuse = [oppositeVertex, newVertexIndex];
       var halfA = [edge[0], newVertexIndex];
       var halfB = [edge[1], newVertexIndex];
-      var newEdges = complex.normalize([hypotenuse, halfA, halfB]);
-      newEdges.map(function(newEdge) {
-        edgesToBeAdded.add(newEdge);
+      [hypotenuse, halfA, halfB].map(function(newEdge) {
+        edgesToBeAdded.push(newEdge);
       });
     });
 
-    edgesToBeAdded.forEach(function(newEdge) {
+    complex.unique(complex.normalize(edgesToBeAdded));
+    edgesToBeAdded.map(function(newEdge) {
       vec3.subtract(scratch, positions[newEdge[0]], positions[newEdge[1]]);
       heap.push({
         squaredLength: vec3.squaredLength(scratch),
@@ -85,7 +85,9 @@ module.exports = function(cells, positions, threshold, maxIterations) {
       });
     });
 
-    cellsToBeDeleted.sort().reverse().forEach(function(cellIndex) {
+    cellsToBeDeleted.sort(function(a, b) {
+      return a - b;
+    }).reverse().map(function(cellIndex) {
       cells.splice(cellIndex, 1);
     });
     complex.normalize(cells);
